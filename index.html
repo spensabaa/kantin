@@ -15,27 +15,17 @@
     <!-- qrcode.js -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
     <style>
-        body {
-            background-color: #f8f9fa;
-        }
-        .card {
-            border-radius: 1rem;
-        }
-        .form-control, .form-select {
-            border-radius: 0.75rem;
-            padding: 0.75rem 1rem;
-        }
-        .btn {
-            border-radius: 0.75rem;
-            padding: 0.75rem 1.25rem;
-        }
+        body { background-color: #f8f9fa; }
+        .card { border-radius: 1rem; }
+        .form-control, .form-select { border-radius: 0.75rem; padding: 0.75rem 1rem; }
+        .btn { border-radius: 0.75rem; padding: 0.75rem 1.25rem; }
     </style>
 </head>
 <body class="bg-light text-dark min-vh-100 d-flex flex-column">
 
     <!-- VIEW LOGIN -->
     <div id="view-login" class="flex-grow-1 d-flex align-items-center justify-content-center p-4">
-        <div class="card shadow-sm border p-4 max-w-md w-100" style="max-width: 420px;">
+        <div class="card shadow-sm border p-4 w-100" style="max-width: 420px;">
             <div class="text-center mb-4">
                 <div class="bg-warning-subtle text-warning-emphasis rounded-4 mx-auto d-flex align-items-center justify-content-center fs-3 mb-3 shadow-sm" style="width: 60px; height: 60px;">
                     <i class="fas fa-wallet"></i>
@@ -79,9 +69,7 @@
         </header>
 
         <!-- CONTAINER NAVIGASI MENU UTAMA -->
-        <div class="bg-white border-bottom px-4 py-2 d-flex gap-2 overflow-x-auto" id="menu-container">
-            <!-- Menu dinamis berdasarkan role -->
-        </div>
+        <div class="bg-white border-bottom px-4 py-2 d-flex gap-2 overflow-x-auto" id="menu-container"></div>
 
         <main class="flex-grow-1 p-4 container" style="max-width: 1140px;">
 
@@ -89,9 +77,9 @@
             <div id="admin-tab-pengaturan-user" class="admin-panel d-none">
                 <div class="card bg-white p-4 border shadow-sm mb-4">
                     <h3 class="h6 fw-bold mb-3">Pengaturan Akun & Hak Akses</h3>
-                    <p class="text-muted small mb-3">Kelola data login pengguna sistem (Admin, Pedagang, Siswa) melalui Sheet <code class="bg-light px-1 py-0.5 rounded">users</code>.</p>
+                    <p class="text-muted small mb-3">Kelola data login pengguna sistem melalui Sheet <code class="bg-light px-1 py-0.5 rounded">users</code>.</p>
                     <div class="alert alert-warning bg-warning-subtle border-0 text-warning-emphasis small rounded-3 mb-0">
-                        <i class="fas fa-info-circle me-1"></i> Penambahan atau perubahan kredensial akun dapat langsung dilakukan melalui Google Spreadsheet pada sheet <code class="fw-bold">users</code>.
+                        <i class="fas fa-info-circle me-1"></i> Penambahan atau perubahan kredensial akun dilakukan langsung melalui Google Spreadsheet.
                     </div>
                 </div>
             </div>
@@ -119,7 +107,7 @@
 
             <div id="admin-tab-topup" class="admin-panel d-none">
                 <div class="card bg-white p-4 border shadow-sm mx-auto" style="max-width: 500px;">
-                    <h3 class="h6 fw-bold mb-3">Top-Up Saldo E-Wallet Siswa</h3>
+                    <h3 class="h6 fw-bold mb-3">Top-Up Saldo E-Wallet Siswa (Khusus Admin)</h3>
                     <form onsubmit="handleTopupAdmin(event)" class="needs-validation">
                         <div class="mb-3">
                             <label class="form-label small fw-bold text-secondary">NISN Siswa</label>
@@ -185,7 +173,6 @@
 
             <!-- ================= PEDAGANG TABS ================= -->
             <div id="pedagang-tab-transaksi" class="pedagang-panel d-none row g-4">
-                <!-- Kiri: Kasir QR & List Item Belanja -->
                 <div class="col-lg-5">
                     <div class="card bg-white p-4 border shadow-sm h-100">
                         <div class="d-flex justify-content-between align-items-center border-bottom pb-3 mb-3">
@@ -204,7 +191,6 @@
                                 <input type="text" id="merchantNisn" onblur="cekSiswaMerchant(this.value)" class="form-control form-control-sm" placeholder="Scan atau ketik NISN...">
                             </div>
 
-                            <!-- Notifikasi Sisa Saldo Siswa -->
                             <div id="merchantInfoSiswa" class="d-none alert alert-warning bg-warning-subtle text-warning-emphasis small rounded-3 mb-0">
                                 <p class="fw-bold mb-1" id="merchantNamaSiswa">-</p>
                                 <p class="mb-0">Sisa Saldo: <span id="merchantSaldoSiswa" class="fw-bold text-warning-emphasis">Rp 0</span></p>
@@ -212,11 +198,10 @@
 
                             <hr class="text-muted my-1">
 
-                            <!-- Item Pembelian -->
                             <div>
                                 <label class="form-label small fw-bold text-secondary">Item / Menu Belanja</label>
                                 <div class="input-group mb-2">
-                                    <input type="text" id="inputItemNama" placeholder="Nama Menu (cth: Soto)" class="form-control form-control-sm">
+                                    <input type="text" id="inputItemNama" placeholder="Nama Menu" class="form-control form-control-sm">
                                     <input type="number" id="inputItemHarga" placeholder="Harga" class="form-control form-control-sm" style="max-width: 90px;">
                                     <button onclick="tambahItemCart()" class="btn btn-warning text-white fw-bold px-3" style="background-color: #fd7e14;"><i class="fas fa-plus"></i></button>
                                 </div>
@@ -235,7 +220,6 @@
                     </div>
                 </div>
 
-                <!-- Kanan: Rekapitulasi Harian Pedagang -->
                 <div class="col-lg-7">
                     <div class="card bg-white p-4 border shadow-sm h-100">
                         <h3 class="h6 fw-bold text-uppercase mb-3">Rekapitulasi Penjualan Harian</h3>
@@ -280,7 +264,7 @@
                 <div class="card bg-white p-4 border shadow-sm vstack gap-3 align-items-center">
                     <h3 class="h6 fw-bold text-start w-100 mb-0">QR Code Kartu Siswa</h3>
                     <div id="qrcodeSiswa" class="bg-white p-3 rounded-4 shadow-sm border"></div>
-                    <p class="text-muted small mb-0">Tunjukkan QR Code ini ke pedagang kantin saat melakukan pembayaran belanja.</p>
+                    <p class="text-muted small mb-0">Tunjukkan QR Code ini ke pedagang kantin saat pembayaran.</p>
                     <button onclick="window.print()" class="btn btn-dark btn-sm fw-bold px-4"><i class="fas fa-print me-1"></i> Cetak Kartu</button>
                 </div>
             </div>
@@ -291,15 +275,14 @@
     <!-- Bootstrap JS Bundle CDN -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
 
-    <!-- SCRIPT UTAMA (GANTI GOOGLE.SCRIPT.RUN DENGAN FETCH API KE GAS) -->
+    <!-- SCRIPT UTAMA -->
     <script>
-        const GAS_URL = "https://script.google.com/macros/s/AKfycbwzvp_9_jvBSDylGd1ex6a31vrN0YnFlC_OCR7XHToln6PKUAiQjkTLH9KCQRubcweW/exec";
+        const GAS_URL = "https://script.google.com/macros/s/AKfycbzoYmasASju2cf9hBhRuLtS2cXjzef8BdzacPb23VGKj05vwjDgp1rsxD1JSOV6eGI6/exec";
         
         let sessionUser = null;
         let qrScanner = null;
         let cartItems = [];
 
-        // Helper universal untuk memanggil GAS melalui fetch POST/GET
         async function callGas(action, payload = {}) {
             try {
                 const response = await fetch(GAS_URL, {
@@ -413,7 +396,6 @@
             }
         }
 
-        // --- ADMIN FUNCTIONS ---
         function loadDataSiswaAdmin() {
             callGas('getDataSiswa').then(res => {
                 const tbody = document.getElementById('tabelMasterSiswa');
@@ -500,8 +482,6 @@
             });
         }
 
-
-        // --- PEDAGANG FUNCTIONS ---
         function toggleScanner() {
             const box = document.getElementById('scanner-box');
             if (box.classList.contains('d-none')) {
@@ -518,7 +498,7 @@
                     }, 
                     err => {}
                 ).catch(err => {
-                    Swal.fire('Gagal Mengakses Kamera', 'Pastikan izin kamera browser sudah diizinkan.', 'error');
+                    Swal.fire('Gagal Mengakses Kamera', 'Pastikan izin kamera browser sudah diaktifkan di tab mandiri.', 'error');
                     stopScanner();
                 });
             } else {
@@ -621,8 +601,6 @@
             });
         }
 
-
-        // --- SISWA FUNCTIONS ---
         function loadDataSiswaPribadi(nisn) {
             callGas('getSaldoSiswa', { nisn }).then(res => {
                 if (res.success) {
