@@ -78,9 +78,6 @@
                 <div class="card bg-white p-4 border shadow-sm mb-4">
                     <h3 class="h6 fw-bold mb-3">Pengaturan Akun & Hak Akses</h3>
                     <p class="text-muted small mb-3">Kelola data login pengguna sistem melalui Sheet <code class="bg-light px-1 py-0.5 rounded">users</code>.</p>
-                    <div class="alert alert-warning bg-warning-subtle border-0 text-warning-emphasis small rounded-3 mb-0">
-                        <i class="fas fa-info-circle me-1"></i> Penambahan atau perubahan kredensial akun dilakukan langsung melalui Google Spreadsheet.
-                    </div>
                 </div>
             </div>
 
@@ -222,7 +219,7 @@
 
                 <div class="col-lg-7">
                     <div class="card bg-white p-4 border shadow-sm h-100">
-                        <h3 class="h6 fw-bold text-uppercase mb-3">Rekapitulasi Penjualan Harian</h3>
+                        <h3 class="h6 fw-bold text-uppercase mb-3">Rekapitulasi Penjualan Harian Saya</h3>
                         <div class="table-responsive">
                             <table class="table table-hover align-middle small mb-0">
                                 <thead class="table-light text-secondary">
@@ -277,7 +274,7 @@
 
     <!-- SCRIPT UTAMA -->
     <script>
-        const GAS_URL = "https://script.google.com/macros/s/AKfycbz7jvFVjO1IIodxBon4CPVIBa9aV01UWi7G4ujN8kWnL0wdsnD9xrLo4RuGgMLWOaRl/exec";
+        const GAS_URL = "https://script.google.com/macros/s/AKfycby2HQQIjZsdtxQTK92XeBHaJQhRxJ5S9KFVEI_igrOSizl_txnTsRKHFIELemVEnXr4/exec";
         
         let sessionUser = null;
         let qrScanner = null;
@@ -298,7 +295,6 @@
             }
         }
 
-        // Cek otomatis sesi saat halaman dimuat atau direfresh
         window.addEventListener('DOMContentLoaded', () => {
             const savedSession = localStorage.getItem('kantin_session');
             if (savedSession) {
@@ -477,7 +473,7 @@
 
         function loadRekapAdmin() {
             const tgl = document.getElementById('filterTglAdmin').value;
-            callGas('getRekapitulasi', { tanggal: tgl }).then(res => {
+            callGas('getRekapitulasi', { tanggal: tgl, petugas: sessionUser.nama, role: sessionUser.role }).then(res => {
                 const tbody = document.getElementById('tabelRekapAdmin');
                 if (!res || res.length === 0) {
                     tbody.innerHTML = '<tr><td colspan="6" class="p-4 text-center text-muted">Belum ada transaksi.</td></tr>';
@@ -598,10 +594,10 @@
 
         function loadRekapMerchant() {
             const today = new Date().toISOString().split('T')[0];
-            callGas('getRekapitulasi', { tanggal: today }).then(res => {
+            callGas('getRekapitulasi', { tanggal: today, petugas: sessionUser.nama, role: sessionUser.role }).then(res => {
                 const tbody = document.getElementById('tabelRekapMerchant');
                 if (!res || res.length === 0) {
-                    tbody.innerHTML = '<tr><td colspan="4" class="p-4 text-center text-muted">Belum ada transaksi hari ini.</td></tr>';
+                    tbody.innerHTML = '<tr><td colspan="4" class="p-4 text-center text-muted">Belum ada transaksi penjualan hari ini.</td></tr>';
                     return;
                 }
                 tbody.innerHTML = res.map(t => `
