@@ -142,6 +142,29 @@
             </div>
 
             <div id="admin-tab-rekap" class="admin-panel d-none">
+                <!-- Rekap Total Pendapatan Masing-Masing Penjual Per Hari -->
+                <div class="card bg-white p-4 border shadow-sm mb-4">
+                    <div class="d-flex justify-content-between align-items-center mb-3">
+                        <h3 class="h6 fw-bold mb-0">Rekapitulasi Total Pendapatan Penjual Per Hari</h3>
+                        <input type="date" id="filterTglPendapatan" onchange="loadRekapPendapatanPenjual()" class="form-control form-control-sm w-auto">
+                    </div>
+                    <div class="table-responsive">
+                        <table class="table table-hover align-middle small mb-0">
+                            <thead class="table-light text-secondary">
+                                <tr>
+                                    <th class="p-3">Nama Penjual / Petugas</th>
+                                    <th class="p-3 text-center">Jumlah Transaksi</th>
+                                    <th class="p-3 text-end">Total Pendapatan</th>
+                                </tr>
+                            </thead>
+                            <tbody id="tabelPendapatanPenjual">
+                                <tr><td colspan="3" class="p-4 text-center text-muted">Memuat data...</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- Rekapitulasi Keseluruhan -->
                 <div class="card bg-white p-4 border shadow-sm mb-4">
                     <div class="d-flex justify-content-between align-items-center mb-3">
                         <h3 class="h6 fw-bold mb-0">Rekapitulasi Transaksi Keseluruhan</h3>
@@ -274,7 +297,7 @@
 
     <!-- SCRIPT UTAMA -->
     <script>
-        const GAS_URL = "https://script.google.com/macros/s/AKfycby2HQQIjZsdtxQTK92XeBHaJQhRxJ5S9KFVEI_igrOSizl_txnTsRKHFIELemVEnXr4/exec";
+        const GAS_URL = "https://script.google.com/macros/s/AKfycbxF7Tu8ftUCS_GtAvMWa72WOvuA7tTvhKtTyNUDU1QS_0Li0Fbs_rvb-mdvVYYSZktX/exec";
         
         let sessionUser = null;
         let qrScanner = null;
@@ -398,7 +421,10 @@
 
             if (role === 'admin') {
                 if (tabId === 'data-siswa') loadDataSiswaAdmin();
-                if (tabId === 'rekap') loadRekapAdmin();
+                if (tabId === 'rekap') {
+                    loadRekapPendapatanPenjual();
+                    loadRekapAdmin();
+                }
             } else if (role === 'pedagang') {
                 loadRekapMerchant();
             } else if (role === 'siswa') {
@@ -471,6 +497,24 @@
             });
         }
 
+        function loadRekapPendapatanPenjual() {
+            const tgl = document.getElementById('filterTglPendapatan').value;
+            callGas('getRekapPendapatanPenjual', { tanggal: tgl }).then(res => {
+                const tbody = document.getElementById('tabelPendapatanPenjual');
+                if (!res || res.length === 0) {
+                    tbody.innerHTML = '<tr><td colspan="3" class="p-4 text-center text-muted">Belum ada pendapatan penjual.</td></tr>';
+                    return;
+                }
+                tbody.innerHTML = res.map(p => `
+                    <tr>
+                        <td class="p-3 fw-bold">${p.nama}</td>
+                        <td class="p-3 text-center">${p.jumlahTransaksi} Transaksi</td>
+                        <td class="p-3 text-end fw-bold text-success">Rp ${Number(p.totalPendapatan).toLocaleString('id-ID')}</td>
+                    </tr>
+                `).join('');
+            });
+        }
+
         function loadRekapAdmin() {
             const tgl = document.getElementById('filterTglAdmin').value;
             callGas('getRekapitulasi', { tanggal: tgl, petugas: sessionUser.nama, role: sessionUser.role }).then(res => {
@@ -508,7 +552,7 @@
                     }, 
                     err => {}
                 ).catch(err => {
-                    Swal.fire('Gagal Mengakses Kamera', 'Pastikan izin kamera browser sudah diaktifkan di tab mandiri.', 'error');
+                    Swal.fire('Gagal Mengakses Kamera', 'Pastikan izin kamera browser sudah diaktifkan.', 'error');
                     stopScanner();
                 });
             } else {
