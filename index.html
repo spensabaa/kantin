@@ -298,6 +298,23 @@
             }
         }
 
+        // Cek otomatis sesi saat halaman dimuat atau direfresh
+        window.addEventListener('DOMContentLoaded', () => {
+            const savedSession = localStorage.getItem('kantin_session');
+            if (savedSession) {
+                sessionUser = JSON.parse(savedSession);
+                muatDashboard(sessionUser);
+            }
+        });
+
+        function muatDashboard(res) {
+            document.getElementById('navNama').textContent = res.nama;
+            document.getElementById('navRole').textContent = 'ROLE: ' + res.role.toUpperCase();
+            document.getElementById('view-login').classList.add('d-none');
+            document.getElementById('view-dashboard').classList.remove('d-none');
+            buildMenu(res.role);
+        }
+
         function jalankanSetup() {
             Swal.fire({ title: 'Memproses Setup...', allowOutsideClick: false, didOpen: () => Swal.showLoading() });
             callGas('setupInitialData')
@@ -316,12 +333,8 @@
                     Swal.close();
                     if (res.success) {
                         sessionUser = res;
-                        document.getElementById('navNama').textContent = res.nama;
-                        document.getElementById('navRole').textContent = 'ROLE: ' + res.role.toUpperCase();
-                        document.getElementById('view-login').classList.add('d-none');
-                        document.getElementById('view-dashboard').classList.remove('d-none');
-
-                        buildMenu(res.role);
+                        localStorage.setItem('kantin_session', JSON.stringify(res));
+                        muatDashboard(res);
                     } else {
                         Swal.fire('Gagal', res.message, 'error');
                     }
@@ -334,6 +347,7 @@
 
         function logout() {
             sessionUser = null;
+            localStorage.removeItem('kantin_session');
             stopScanner();
             document.getElementById('view-dashboard').classList.add('d-none');
             document.getElementById('view-login').classList.remove('d-none');
